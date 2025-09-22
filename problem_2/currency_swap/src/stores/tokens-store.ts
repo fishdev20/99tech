@@ -1,0 +1,61 @@
+import { fetchTokensAPI } from '@/api';
+import type { Token } from '@/types';
+import { create } from 'zustand';
+
+interface TokensState {
+  tokens: Token[];
+  isLoading: boolean;
+  error: string | null;
+  lastUpdated: number | null;
+
+  getTokens: (withBalance?: boolean) => Promise<void>;
+  refreshPrices: () => Promise<void>;
+  getTokenByName: (currency: string) => Token | undefined;
+}
+
+export const useTokensStore = create<TokensState>((set, get) => ({
+  tokens: [],
+  isLoading: false,
+  error: null,
+  lastUpdated: null,
+
+  getTokens: async (withBalance = false) => {
+    set({ isLoading: true, error: null });
+    try {
+      const data = await fetchTokensAPI();
+
+      const enriched = withBalance
+        ? data.map((token) => ({
+            ...token,
+            balance: Number((Math.random() * 10000).toFixed(6)),
+          }))
+        : data.map((token) => ({
+            ...token,
+            balance: 0,
+          }));
+
+      set({ tokens: enriched, isLoading: false });
+    } catch (err) {
+      set({ isLoading: false, error: (err as Error).message });
+    }
+  },
+
+  refreshPrices: async () => {
+    const { tokens } = get();
+    if (tokens.length === 0) return;
+
+    try {
+      const updatedTokens = await fetchTokensAPI();
+      set({
+        tokens: updatedTokens,
+        lastUpdated: Date.now(),
+      });
+    } catch (error) {
+      console.error('Failed to refresh prices:', error);
+    }
+  },
+
+  getTokenByName: (currency: string) => {
+    return get().tokens.find((token) => token.currency === currency);
+  },
+}));
