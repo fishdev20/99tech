@@ -176,7 +176,7 @@ export default function SwapCard() {
           </AlertDescription>
         </Alert>
       )}
-      <PriceDetails minimumReceived={minimumReceive} />
+      <PriceDetails />
       <Separator className="my-2" />
       <div className="flex justify-between text-white text-sm font-semibold">
         <div>Minimum received</div>

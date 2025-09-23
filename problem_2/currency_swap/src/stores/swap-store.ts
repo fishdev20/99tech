@@ -38,12 +38,12 @@ export const useSwapStore = create<SwapState>((set, get) => ({
   setToAmount: (toAmount) => set({ toAmount }),
 
   revertTokens: () => {
-    const { fromToken, toToken, toAmount } = get();
+    const { fromToken, toToken, toAmount, fromAmount } = get();
     set({
       fromToken: toToken,
       toToken: fromToken,
       fromAmount: toAmount,
-      toAmount: '',
+      toAmount: fromAmount,
     });
   },
 

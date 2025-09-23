@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp, Info } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 
-const PriceDetails = ({ minimumReceived }: { minimumReceived: number }) => {
+const PriceDetails = () => {
   const { toToken, fromToken } = useSwapStore();
   const { getTokenByName } = useTokensStore();
   const [showDetails, setShowDetails] = useState(false);
