@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import LimitCard from './components/app/limit-card';
 import SwapCard from './components/app/swap-card';
+import { Backdrop } from './components/ui/backdrop';
 import { Button } from './components/ui/button';
 import { Card } from './components/ui/card';
 import {
@@ -18,7 +19,7 @@ import { useWalletStore } from './stores/wallet-store';
 function App() {
   const [tab, setTab] = useState<'swap' | 'limit'>('swap');
 
-  const { isLoading, error, getTokens } = useTokensStore();
+  const { initialLoading, isLoading, error, getTokens } = useTokensStore();
   const { isConnected, isConnecting, address, connect } = useWalletStore();
 
   useEffect(() => {
@@ -54,15 +55,15 @@ function App() {
       </div>
 
       <Card className="relative w-full max-w-md mx-auto text-white shadow-xl rounded-xl p-6 space-y-6 border border-input">
-        {/* <Backdrop
-          open={isLoading}
+        <Backdrop
+          open={initialLoading}
           variant="blur"
           className="absolute items-center justify-center rounded-xl"
         >
           <div className="animate-pulse flex gap-2">
             <Loader className="animate-spin text-primary flex justify-center" /> Loading tokens...
           </div>
-        </Backdrop> */}
+        </Backdrop>
         <Tabs value={tab} onValueChange={(value) => setTab(value as 'swap' | 'limit')}>
           <div className="flex items-center justify-between mb-2">
             <TabsList className="rounded-full">

@@ -5,6 +5,7 @@ import { create } from 'zustand';
 interface TokensState {
   tokens: Token[];
   isLoading: boolean;
+  initialLoading: boolean;
   error: string | null;
   lastUpdated: number | null;
 
@@ -16,11 +17,17 @@ interface TokensState {
 export const useTokensStore = create<TokensState>((set, get) => ({
   tokens: [],
   isLoading: false,
+  initialLoading: false,
   error: null,
   lastUpdated: null,
 
   getTokens: async (withBalance = false) => {
-    set({ isLoading: true, error: null });
+    const isInitial = !withBalance;
+    if (isInitial) {
+      set({ initialLoading: true, error: null });
+    } else {
+      set({ isLoading: true, error: null });
+    }
     try {
       const data = await fetchTokensAPI();
 
@@ -34,9 +41,11 @@ export const useTokensStore = create<TokensState>((set, get) => ({
             balance: 0,
           }));
 
-      set({ tokens: enriched, isLoading: false });
+      set({ tokens: enriched });
     } catch (err) {
-      set({ isLoading: false, error: (err as Error).message });
+      set({ error: (err as Error).message });
+    } finally {
+      set({ isLoading: false, initialLoading: false });
     }
   },
 

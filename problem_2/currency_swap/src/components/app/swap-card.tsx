@@ -3,12 +3,13 @@ import { MAX_SLIPPAGE } from '@/constant';
 import { useSwapStore } from '@/stores/swap-store';
 import { useTokensStore } from '@/stores/tokens-store';
 import { useWalletStore } from '@/stores/wallet-store';
-import { AlertCircleIcon, ArrowUpDown, CheckCircle2Icon, CopyIcon, Loader } from 'lucide-react';
+import { ArrowUpDown, Loader } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Separator } from '../ui/separator';
 import PriceDetails from './price-details';
+import SwapStatus from './swap-status';
 import TokenInput from './token-input';
+import WalletStatus from './wallet-status';
 
 export default function SwapCard() {
   const {
@@ -144,38 +145,9 @@ export default function SwapCard() {
         )}
       </Button>
 
-      {transactionError && (
-        <Alert variant="destructive" className="text-left bg-input/30 mt-2">
-          <AlertCircleIcon />
-          <AlertTitle>Transaction Failed.</AlertTitle>
-          <AlertDescription>
-            <p>{transactionError}</p>
-          </AlertDescription>
-        </Alert>
-      )}
+      <WalletStatus />
+      <SwapStatus />
 
-      {status === 'success' && transactionHash && (
-        <Alert className="border border-green-400 text-left text-green-400 bg-input/30 mt-2">
-          <CheckCircle2Icon />
-          <AlertTitle>Swap successful!</AlertTitle>
-          <AlertDescription>
-            Your transaction has been confirmed.
-            <code className="flex gap-1 text-xs bg-input px-2 py-0.5 rounded font-mono items-center">
-              {transactionHash.slice(0, 10)}...{transactionHash.slice(-8)}
-              <Button
-                size="icon"
-                variant="ghost"
-                className="text-green-400 hover:text-green-500"
-                onClick={() => {
-                  navigator.clipboard.writeText(transactionHash);
-                }}
-              >
-                <CopyIcon size={12} />
-              </Button>
-            </code>
-          </AlertDescription>
-        </Alert>
-      )}
       <PriceDetails />
       <Separator className="my-2" />
       <div className="flex justify-between text-white text-sm font-semibold">
